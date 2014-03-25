@@ -31,10 +31,10 @@ class UsuariosController extends AdminAppController {
 			
 			$this->Usuario->create();
 			if ($this->Usuario->save($data)) {
-				$this->Session->setFlash('Usuario adicionado com sucesso!');
+				$this->Session->setFlash('Usuário adicionado com sucesso!');
 				$this->redirect(array('action'=>'index'));
 			} else {
-				$this->Session->setFlash('Erro ao adicionar Usuario!');
+				$this->Session->setFlash('Erro ao adicionar Usuário!');
 			}
 			
 		}
@@ -47,17 +47,17 @@ class UsuariosController extends AdminAppController {
 	
 	public function edit($Usuario_id = null) {
 	
-		$this->set('title_for_layout','Usuarios - Edita');
+		$this->set('title_for_layout','Usuários - Edita');
 	
 		if ($this->request->isPost()) {
 			$data = $this->request->data;
 			$data['Usuario']['id'] = $Usuario_id;
 			
 			if ($this->Usuario->save($data)) {
-				$this->Session->setFlash('Usuario editado com sucesso!');
+				$this->Session->setFlash('Usuário editado com sucesso!');
 				$this->redirect(array('action'=>'index'));
 			} else {
-				$this->Session->setFlash('Erro ao editar Usuario!');
+				$this->Session->setFlash('Erro ao editar Usuário!');
 			}
 			
 		}
@@ -70,44 +70,17 @@ class UsuariosController extends AdminAppController {
 		$this->render('form');
 	}
 	
-	public function emaberto() {
-		$this->uses = array('Chamada');
-		// Carrega dados do BD
-		$this->Chamada->Behaviors->attach('Containable');
-		$this->Chamada->contain(
-			'Contato',
-			'Instituicao',
-			'Instituicao.ContatosInstituicao',
-			'Instituicao.ContatosInstituicao.Contato',
-			'Instituicao.InstituicoesEndereco',
-			'Instituicao.InstituicoesEndereco.Cidade',
-			'Fornecedor',
-			'Fornecedor.FornecedoresEndereco',
-			'Fornecedor.FornecedoresEndereco.Cidade',
-			'Assunto',
-			'Filhas'
-		);
-		$user = $this->Auth->user();
-		$conditions = array(
-			'Chamada.Usuario_id' => $user['id'],
-			'Chamada.data_fim' => null
-		);
-		$chamadas = $this->Paginate('Chamada',$conditions);
-		$this->set('Chamadas',$chamadas);
-		
-	}
-	
 	public function login() {
 		
-		$this->set('title_for_layout','Sistema Cáritas');
+		$this->set('title_for_layout','Advogados');
 	
 		if ($this->request->isPost()) {
 			
 			if ($this->Auth->login()) {
-				$this->Session->setFlash('Usuario autenticado com successo!');
+				$this->Session->setFlash('Usuário autenticado com successo!');
 				$this->redirect('/');
 			} else {
-				$this->Session->setFlash('Erro na autenticação do Usuario!');
+				$this->Session->setFlash('Erro na autenticação do Usuário!');
 			}
 			
 		}

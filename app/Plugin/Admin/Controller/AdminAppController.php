@@ -32,7 +32,7 @@ App::uses('Controller', 'Controller');
  */
 class AdminAppController extends AppController {
 
-	public $uses = array('Caritas.Menu');
+	public $uses = array('Sys.Menu');
 
 	public $helpers = array(
 		'Bootstrap.AuthBs',
