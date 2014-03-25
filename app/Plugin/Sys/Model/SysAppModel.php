@@ -29,5 +29,5 @@ App::uses('Model', 'Model');
  *
  * @package       app.Model
  */
-class CaritasAppModel extends AppModel {
+class SysAppModel extends AppModel {
 }

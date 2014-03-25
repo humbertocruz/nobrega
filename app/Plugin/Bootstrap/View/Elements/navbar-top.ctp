@@ -15,7 +15,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="/">Sistema Cáritas</a>
+		<a class="navbar-brand" href="/">Advogados</a>
 	</div>
 
 	<!-- Collect the nav links, forms, and other content for toggling -->
