@@ -29,8 +29,8 @@ class UsuariosController extends AdminAppController {
 			$data = $this->request->data;
 			if (isset($data['Usuario']['id'])) unset($data['Usuario']['id']);
 			
-			$this->Atendente->create();
-			if ($this->Atendente->save($data)) {
+			$this->Usuario->create();
+			if ($this->Usuario->save($data)) {
 				$this->Session->setFlash('Usuário adicionado com sucesso!');
 				$this->redirect(array('action'=>'index'));
 			} else {
@@ -47,7 +47,7 @@ class UsuariosController extends AdminAppController {
 	
 	public function edit($Usuario_id = null) {
 	
-		$this->set('title_for_layout','Usuarios - Edita');
+		$this->set('title_for_layout','Usuários - Edita');
 	
 		if ($this->request->isPost()) {
 			$data = $this->request->data;
