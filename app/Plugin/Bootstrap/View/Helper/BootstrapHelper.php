@@ -4,9 +4,9 @@ App::uses('AppHelper', 'View/Helper');
 
 class BootstrapHelper extends AppHelper {
 
-	public $helpers = array('Html','Paginator','Form','Bootstrap.AuthBs');
-
-	public function pageHeader($header = '') { ob_start(); ?>
+	public $helpers = array('Html','Paginator','Form','Bootstrap.AuthBs','Session');
+	
+	public function pageHeader($header = 'Page Header') { ob_start(); ?>
 
 		<div class="page-header">
 		<h3><?php echo $header;?></h3>
@@ -14,33 +14,133 @@ class BootstrapHelper extends AppHelper {
 
 	<?php return ob_get_clean(); }
 
-	public function btnLink($text = 'Adicionar', $url = array(), $type = 'default') {
-	
-		$Permissoes = $this->_View->viewVars['UserPermissoes'];
-		$user = $this->_View->viewVars['usuario'];
+	public function btnLink($text = 'Adicionar', $url = array(), $options = array()) {
 		
-		$controller = (isset($url['controller']))?($url['controller']):($this->params['controller']);
-		$action = (isset($url['action']))?($url['action']):(null);
+		$defaults = array(
+			'style'=>'default',
+			'type'=>'',
+			'message'=>false,
+			'size' => '',
+			'title' => '',
+			'icon' => false,
+			'method' => 'get',
+			'block' => false,
+			'message' => false,
+			'submit' => false
+		);
+		$options = array_merge($defaults, $options);
 		
-		if ( isset( $Permissoes[$controller][$action] ) or $user['NiveisAcesso']['admin'] == 1 ) {
-			$link = $url;
-			$disabled = '';
+		if ($options['icon']) {
+			$icon_span = '<span class="glyphicon glyphicon-'.$options['icon'].'"></span>';
 		} else {
-			$link = '#';
-			$disabled = array('disabled'=>'disabled');
+			$icon_span = '';
 		}
-		return $this->Html->link($text, $link, array($disabled, 'class'=>'btn btn-'.$type));
+		$linkText = '';
+		if ($options['icon']) $linkText.=$icon_span;
+		if ($options['icon'] and $text) $linkText.='&nbsp;';
+		if ($text) $linkText.=$text;
+		if ($options['block']) {
+			$block = 'btn-block';
+		} else {
+			$block = '';
+		}
+		if ($options['submit']) {
+			return( $this->submit($linkText, array(
+				'class' => 'btn btn-'.$options['style'].' '.$options['type'].' '.$options['size']
+				//'block' => $options['block']
+			) ) );
+		} else if ($options['method'] == 'get') {
+			return $this->Html->link(
+				$linkText,
+				$url,
+				array(
+					'escape'=>false,
+					'class'=>'btn btn-'.$options['style'].' '.$block.' '.$options['type'].' '.$options['size'],
+					'title' => $options['title'],
+				),
+				$options['message']
+			);
+		} else if ($options['method'] == 'post') {
+			return $this->Form->postLink(
+				$linkText,
+				$url,
+				array(
+					'escape'=>false,
+					'class'=>'btn btn-'.$options['style'].' '.$block.' '.$options['type'].' '.$options['size'],
+					'title' => $options['title'],
+					'block' => $options['block']
+				),
+				$options['message']
+			);
+		}
 	}
 	
-	public function save_cancel() {
-	ob_start(); ?>
-		<div class="btn-group">
-			<?php
-			echo $this->Form->submit('Gravar', array('class'=>'btn btn-primary','div'=>false));
-			echo $this->Html->link('Cancelar', array('action'=>'index'), array('class'=>'btn btn-default'));
-			?>
-		</div>
-		<?php return ob_get_clean(); }
+	public function btnPost($text = 'Adicionar', $url = array(), $options = array()) {
+		
+		$defaults = array(
+			'style'=>'default',
+			'type'=>'',
+			'message'=>false,
+			'size' => ''
+		);
+		$options = array_merge($defaults, $options);
+		return $this->Form->postLink($text, $url, array('escape'=>false,'class'=>'btn btn-'.$options['style'].' '.$options['type'].' '.$options['size']), $options['message']);
+	}
+	
+	// Form	
+	public function create($Model, $Options = array()) {
+		$form = $this->Form->create($Model, $Options + array(
+			'inputDefaults' => array(
+				'format' => array('before', 'label', 'between', 'input', 'after','error'),
+				'div' => array(
+					'class' => 'form-group'
+				),
+				'class' => 'form-control',
+				'required' => false,
+				'error' => array(
+					'attributes' => array(
+						'class'=>'help-block text-danger',
+						'wrap' => 'span',
+						'scape' => false
+					)
+				)
+			),
+			'type'=>'post'
+		));
+		return $form;
+	}
+	
+	public function end($Text = null) {
+		return $this->Form->end($Text);
+	}
+	
+	public function input($Name = 'name', $Options = array()) {
+		return $this->Form->input($Name, $Options);
+	}
+	
+	public function submit($Text = 'Submit', $Options = array()) {
+		$defaults = array(
+			'class' => '',
+			'icon' => '',
+			'escape' => false,
+			'type' => 'submit',
+			'block' => false
+		);
+		
+		if (isset($Options['block'])) {
+			$Options['class'].= ' btn-block';
+		}
+		$textSubmit = '';
+		if (isset($Options['icon'])) {
+			$textSubmit.= '<span class="glyphicon glyphicon-'.$Options['icon'].'"></span>&nbsp;';
+		}
+		$textSubmit.= $Text;
+		$Options = array_merge($defaults, $Options);
+		
+		return $this->Form->button($textSubmit, $Options);
+	}
+	
+	// End Form
 	
 	public function sorter($field = '', $text = '', $options = array()) {
 		if ( $this->Paginator->sortKey() == $field ) {
@@ -57,107 +157,7 @@ class BootstrapHelper extends AppHelper {
 	}
 
 	// Formularios Bootstrap
-	
-	public function create($name = null, $options = array()) {
-		echo $this->Form->create($name, $options + array(
-			'inputDefaults' => array(
-				'div' => array(
-					'class' => 'form-group'
-				),
-				'class' => 'form-control',
-				'error' => array(
-					'attributes' => array(
-						'class'=>'text-danger',
-						'wrap' => 'p',
-						'scape' => false
-					)
-				)
-			)
-		));
-	}
-	
-	public function input($name=null, $options = array()) {
-		echo $this->Form->input($name, $options);
-	}
 
-	public function oldinput($name = null, $options = array()) {
-		$defaults = array(
-			'label' => $name,
-			'defaultValue' => '',
-			'id' => Inflector::classify( $this->params['controller']).$name,
-			'type' => 'text',
-			'disabled'=>null,
-			'readonly'=>null,
-			'model'=> Inflector::classify( $this->params['controller'])
-		);
-		$options = array_merge(
-			$defaults,
-			$options
-		);
-		$options['value'] = (isset($this->request->data[$options['model']][$name]))?($this->request->data[$options['model']][$name]):('');
-		// defaultValue se nao tiver valor 
-		if ($options['value'] == '') {
-			if ($options['defaultValue'] != '') {
-				$options['value'] = $options['defaultValue'];
-			}
-		}
-		
-		if ($options['disabled'] != null) {
-			$disabled = 'disabled="disabled"';
-		} else {
-			$disabled = '';
-		}
-		
-		if ($options['readonly'] != null) {
-			$readonly = 'readonly="readonly"';
-		} else {
-			$readonly = '';
-		}
-		
-		ob_start(); ?>
-		<?php if ($options['type'] != 'hidden') { ?>
-		<div class="form-group">
-			<lable><?php echo $options['label']; ?></lable>
-		<?php } ?>
-			<input <?php echo $readonly; ?> <?php echo $disabled; ?> id="<?php echo $options['id'];?>" value="<?php echo $options['value'];?>" type="<?php echo $options['type'];?>" class="form-control" name="data[<?php echo $options['model'];?>][<?php echo $name; ?>]">
-		<?php if ($options['type'] != 'hidden') { ?>
-		</div>
-		<?php } ?>
-
-		<?php return ob_get_clean(); 
-	}
-
-	public function select($name, $options = array()) {
-		$defaults = array(
-			'label' => $name,
-			'options' => array(),
-			'id' => Inflector::classify( $this->params['controller']).$name,
-			'disabled'=>'',
-			'hide'=>'',
-			'model'=> Inflector::classify( $this->params['controller'])
-		);
-		$options = array_merge(
-			$defaults,
-			$options
-		);
-		$hide = ($options['hide'] === 'hide')?('none'):('block');
-		$options['value'] = (isset($this->request->data[$options['model']][$name]))?($this->request->data[$options['model']][$name]):('');
-		ob_start(); ?>
-
-		<div class="form-group" style="display:<?php echo $hide;?>">
-			<lable><?php echo $options['label']; ?></lable>
-			<select <?php echo $options['disabled'];?> id="<?php echo $options['id'];?>" class="form-control" name="data[<?php echo $options['model'];?>][<?php echo $name; ?>]">
-			<?php foreach ($options['options'] as $key => $value) { 
-				$selected = ($key == $options['value'])?('selected="selected"'):('');
-			?>
-				<option <?php echo $selected; ?> value="<?php echo $key;?>"><?php echo $value;?></option>
-			<?php } ?>
-			</select>
-		</div>
-
-		<?php return ob_get_clean(); 
-	}
-	
 	public function belongs($name, $options = array()) {
 		$defaults = array(
 			'label' => $name,
@@ -176,7 +176,7 @@ class BootstrapHelper extends AppHelper {
 		$options['value'] = (isset($this->request->data[$options['model']][$name]))?($this->request->data[$options['model']][$name]):('');
 		ob_start(); ?>
 		<div class="form-group" style="display:<?php echo $hide;?>">
-			<lable><?php echo $options['label']; ?></lable>
+			<?php echo $options['label']; ?>
 			<div class="row">
 				<div class="col-md-11">
 					<select <?php echo $options['disabled'];?> id="<?php echo $options['id'];?>" class="form-control" name="data[<?php echo $options['model'];?>][<?php echo $name; ?>]">
@@ -196,63 +196,47 @@ class BootstrapHelper extends AppHelper {
 		<?php return ob_get_clean(); 
 	}
 	
-	public function text($name, $options = array()) {
-		$defaults = array(
-			'label' => $name,
-			'id' => Inflector::classify( $this->params['controller']).$name,
-			'model'=> Inflector::classify( $this->params['controller'])
-		);
-		$options = array_merge(
-			$defaults,
-			$options
-		);
-		
-		$options['value'] = (isset($this->request->data[$options['model']][$name]))?($this->request->data[$options['model']][$name]):('');
-
-		ob_start(); ?>
-		
-		<div class="form-group">
-			<lable><?php echo $options['label']; ?></lable>
-			<textarea rows="10" id="<?php echo $options['id'];?>" class="form-control" name="data[<?php echo $options['model'];?>][<?php echo $name; ?>]"><?php echo $options['value'];?></textarea>
-		</div>
-
-		
-		<?php return ob_get_clean();
-	}
-	
-	public function radios($name, $options = array()) {
-		
-		$options = array_merge(
-			array(
-				'options' => array(),
-				'id' => Inflector::classify( $this->params['controller']).$name,
-				'value' => (isset($this->request->data[Inflector::classify( $this->params['controller'] )][$name]))?($this->request->data[Inflector::classify( $this->params['controller'] )][$name]):($options['value']),
-				'model'=> Inflector::classify( $this->params['controller'])
-			),
-			$options
-		);
-		
-		ob_start(); ?>
-		<div class="form-group">
-		<div class="radio <?php echo $options['id'];?>">
-			<?php foreach($options['options'] as $key=>$value) { 
-				$checked = ($key == $options['value'])?('checked="checked"'):('');
-			?>
-			<label>
-				<input <?php echo $checked; ?> id="<?php echo $options['id'];?>" type="radio" name="data[<?php echo $options['model'];?>[<?php echo $name; ?>]" value="<?php echo $key;?>"> <?php echo $value; ?>
-			</label>
+	public function paginator() {  ob_start(); ?>
+		<?php
+				$registros = intval( $this->Paginator->counter('{:count}') );
+				$paginas = intval( $this->Paginator->counter('{:pages}') );
+				$pagina = intval( $this->Paginator->counter('{:page}') );
+		?>
+		<ul class="pagination pull-right">
+			
+			<?php if ($pagina == 1) { ?>
+			<li class="disabled"><a href="#">Primeira</a></li>
+			<?php if ($paginas == 1) { ?><li class="active"><a href="#">1</a></li><?php } ?>
+			<?php } else { ?>
+			<li><?php echo $this->Paginator->first('Primeira');?></li>
 			<?php } ?>
-		</div>
-		</div>
-		
+			<?php echo $this->Paginator->numbers(
+			array(
+				'separator' => null,
+				'tag' => 'li',
+				'currentClass' => 'active',
+				'currentTag' => 'a',
+				'escape' => false
+			)
+			); ?>
+			<?php if ($pagina == $paginas) { ?>
+			<li class="disabled"><a href="#">Última</a></li>
+			<?php } else { ?>
+			<li><?php echo $this->Paginator->last('Última');?></li>
+			<?php } ?>
+			<li class="disabled"><a href="#">
+			<?php
+			echo ($registros>1)?($registros.' registros'):($registros.' registro');
+			echo ($paginas>1)?(' ('.$paginas.' páginas)'):(' ('.$paginas.' página)');
+			?>
+			</a></li>
+		</ul>
 		<?php return ob_get_clean();
 	}
-
-	public function paginator($paginator) {  ob_start(); ?>
+	public function simplePaginator() {  ob_start(); ?>
 		<?php //pr($paginator->pageCount); ?>
 		<ul class="pagination">
-			<li><a href="#">&laquo;</a></li>
-		<?php echo $paginator->numbers(
+		<?php echo $this->Paginator->numbers(
 			array(
 				'separator' => null,
 				'tag' => 'li',
@@ -261,137 +245,137 @@ class BootstrapHelper extends AppHelper {
 				'escape' => false
 			)
 		); ?>
-			<li><a href="#">&raquo;</a></li>
-			<li><a href="#"><?php echo $this->Paginator->counter('{:page} de {:pages}'); ?></a></li>
 		</ul>
-		<?php //echo $this->Paginator->counter();?>
 		<?php return ob_get_clean();
 	}
 	
-	public function chamadaActions($id = 1) { ob_start(); ?>
-		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('action'=>'edit', $id));?></li>
-				<li><?php echo $this->Form->postLink('Excluir', array('action'=>'del', $id), null, 'Tem Certeza?');?></li>
-				<li class="divider"></li>
-				<li><?php echo $this->Html->Link('Adicionar Filha', array('action'=>'add', $id));?></li>
-				<li><?php echo $this->Html->Link('Finalizar', array('action'=>'finalizar', $id));?></li>
-			</ul>
-		</div>
-	<?php return ob_get_clean();	
-	}
-	
-	public function chamadaAtendenteActions($id = 1) { ob_start(); ?>
-		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('controller'=>'chamadas', 'action'=>'edit', $id));?></li>
-				<li><?php echo $this->Form->postLink('Excluir', array('controller'=>'chamadas', 'action'=>'del', $id), null, 'Tem Certeza?');?></li>
-				<li class="divider"></li>
-				<li><?php echo $this->Html->Link('Adicionar Filha', array('controller'=>'chamadas', 'action'=>'add', $id));?></li>
-				<li><?php echo $this->Html->Link('Finalizar', array('controller'=>'chamadas', 'action'=>'finalizar', $id));?></li>
-			</ul>
-		</div>
-	<?php return ob_get_clean();	
-	}
-	
-	public function chamadaFilhaActions($id = 1) { ob_start(); ?>
-		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('action'=>'edit', $id));?></li>
-				<li><?php echo $this->Form->postLink('Excluir', array('action'=>'del', $id), null, 'Tem Certeza?');?></li>
-				<li class="divider"></li>
-				<li><?php echo $this->Html->Link('Finalizar', array('action'=>'finalizar', $id));?></li>
-			</ul>
-		</div>
-	<?php return ob_get_clean();	
-	}
-	
-	public function contatoActions($id = 1, $del_hasMany) { 
-		$okToDel = true;
-		foreach($del_hasMany as $hM) {
-			if (count($hM) != 0) {
-				$okToDel = false;
+	public function listActions($id = null, $buttons = array(), $options = array()) {
+		$buttons_default = array(
+			'text'=>'default',
+			'title'=>'',
+			'plugin' => null,
+			'controller' => null,
+			'action' => null,
+			'style' => 'default',
+			'size' => '',
+			'icon' => '',
+			'method' => 'get',
+			'message' => false,
+			'submit' => false,
+			'block' => false
+		);
+		$defaults = array(
+			'size' => false
+		);
+		$options = array_merge($defaults, $options);
+		ob_start(); ?>
+		<ul class="list-group">
+			<?php
+			foreach ($buttons as $button) { 
+				$button = array_merge($buttons_default, $button);
+				$link = array();
+				if ($button['plugin']) $link['plugin'] = $button['plugin'];
+				if ($button['controller']) $link['controller'] = $button['controller'];
+				if ($button['action']) $link['action'] = $button['action'];
+				array_push($link, $id);
+				echo '<li class="list-group-item">'.$this->btnLink(
+					$button['text'],
+					$link,
+					array(
+						'style' => $button['style'],
+						'title' => $button['title'],
+						'icon' => $button['icon'],
+						'method' => $button['method'],
+						'message' => $button['message'],
+						'submit' => $button['submit'],
+						'block' => $button['block']
+					)
+				).'</li>';
 			}
-		}
-		ob_start();
-		?>
-		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('action'=>'edit', $id));?></li>
-				<?php if($okToDel) { ?>
-				<li><?php echo $this->Form->postLink('Excluir', array('action'=>'del', $id), null, 'Tem Certeza?');?></li>
-				<?php } else { ?>
-				<li><a href="#"><span class="label label-danger">Não é possível Excluir!</span></a></li>
-				<?php } ?>
-			</ul>
-		</div>
-	<?php return ob_get_clean();	
+			
+			?>
+		</ul>
+		<?php return ob_get_clean();
 	}
 	
-	public function atendenteActions($id = 1) { ob_start(); ?>
-		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('action'=>'edit', $id));?></li>
-				<li><?php echo $this->Form->postLink('Excluir', array('action'=>'del', $id), null, 'Tem Certeza?');?></li>
-			</ul>
+	public function actions($id = null, $buttons = array(), $options = array()) {
+		$buttons_default = array(
+			'text'=>'default',
+			'title'=>'',
+			'plugin' => null,
+			'controller' => null,
+			'action' => null,
+			'style' => 'default',
+			'size' => '',
+			'icon' => '',
+			'method' => 'get',
+			'message' => false,
+			'submit' => false,
+			'block' => false
+		);
+		$defaults = array(
+			'size' => false
+		);
+		$options = array_merge($defaults, $options);
+		ob_start(); ?>
+		<div class="btn-group <?php echo ($options['size'])?('btn-group-'.$options['size']):(''); ?>">
+			<?php
+			foreach ($buttons as $button) { 
+				$button = array_merge($buttons_default, $button);
+				$link = array();
+				if ($button['plugin']) $link['plugin'] = $button['plugin'];
+				if ($button['controller']) $link['controller'] = $button['controller'];
+				if ($button['action']) $link['action'] = $button['action'];
+				array_push($link, $id);
+				
+				echo $this->btnLink(
+					$button['text'],
+					$link,
+					array(
+						'style' => $button['style'],
+						'title' => $button['title'],
+						'icon' => $button['icon'],
+						'method' => $button['method'],
+						'message' => $button['message'],
+						'submit' => $button['submit'],
+						'block' => $button['block']
+					)
+				);
+			}
+			
+			?>
 		</div>
-	<?php return ob_get_clean();	
+		<?php return ob_get_clean();
 	}
 	
-	public function basicActions($id = 1, $actionPrefix = '') { ob_start(); ?>
+	public function basicActions($id = 0, $options = array()) { 
+		$defaults = array(
+			'size'=>'btn-sm'
+		);
+		$options = $defaults + $options;
+		ob_start(); ?>
 		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('action'=>'edit'.$actionPrefix, $id));?></li>
-				<li><?php echo $this->Form->postLink('Excluir', array('action'=>'del'.$actionPrefix, $id), null, 'Tem Certeza?');?></li>
-			</ul>
+		<?php echo $this->btnLink('Editar', array('action'=>'edit', $id), array('style'=>'primary','size'=>$options['size'])); ?>
+		<?php echo $this->btnPost('Excluir', array('action'=>'del', $id), array('style'=>'danger','message'=>'Tem Certeza?','size'=>$options['size'])); ?>
 		</div>
-	<?php return ob_get_clean();	
-	}
-
-	public function menuActions($id = 1, $actionPrefix = '') { ob_start(); ?>
-		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('action'=>'editLink'.$actionPrefix, $id));?></li>
-				<li><?php echo $this->Form->postLink('Excluir', array('action'=>'delLink'.$actionPrefix, $id), null, 'Tem Certeza?');?></li>
-			</ul>
-		</div>
-	<?php return ob_get_clean();	
+		<?php return ob_get_clean();
 	}
 	
-	public function niveisActions($id = 1, $actionPrefix = '') { ob_start(); ?>
+	public function sacadosActions($id = 0, $options = array()) { 
+		$defaults = array(
+			'size'=>'btn-xs'
+		);
+		$options = $defaults + $options;
+		ob_start(); ?>
 		<div class="btn-group">
-			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-			Ações&nbsp;<span class="caret"></span>
-			</button>
-			<ul class="dropdown-menu" role="menu">
-				<li><?php echo $this->Html->Link('Editar', array('action'=>'editPermissao'.$actionPrefix, $id));?></li>
-				<li><?php echo $this->Form->postLink('Excluir', array('action'=>'delPermissao'.$actionPrefix, $id), null, 'Tem Certeza?');?></li>
-			</ul>
+		<?php echo $this->btnLink('Ver', array('action'=>'view', $id), array('style'=>'success','size'=>$options['size'])); ?>
+		<?php echo $this->btnLink('Editar', array('action'=>'edit', $id), array('style'=>'primary','size'=>$options['size'])); ?>
+		<?php echo $this->btnPost('Excluir', array('action'=>'del', $id), array('style'=>'danger','message'=>'Tem Certeza?','size'=>$options['size'])); ?>
 		</div>
-	<?php return ob_get_clean();	
+		<?php return ob_get_clean();
 	}
-
-
-
+	
+	public function setFlash($message, $style = 'default') {
+		return $this->Session->setFlash($message, array('element'=>'Bootstrap.flash', 'class'=>'alert alert-'.$style.' alert-dismissable'));
+	}
 }

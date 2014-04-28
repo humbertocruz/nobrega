@@ -1,7 +1,7 @@
 <?php
 class UsuariosController extends AdminAppController {
 
-	public $uses = array('Advogados.Usuario');
+	public $uses = array('Admin.Usuario');
 
 	public function home() {
 		
@@ -9,7 +9,7 @@ class UsuariosController extends AdminAppController {
 	
 	public function index() {
 	
-		$this->set('title_for_layout','Usuário - Lista');
+		$this->set('title_for_layout','Usuarios - Lista');
 		
 		$this->Usuario->Behaviors->attach('Containable');
 		$this->Usuario->contain(
@@ -29,12 +29,12 @@ class UsuariosController extends AdminAppController {
 			$data = $this->request->data;
 			if (isset($data['Usuario']['id'])) unset($data['Usuario']['id']);
 			
-			$this->Usuario->create();
-			if ($this->Usuario->save($data)) {
-				$this->Session->setFlash('Usuario adicionado com sucesso!');
+			$this->Atendente->create();
+			if ($this->Atendente->save($data)) {
+				$this->Session->setFlash('Usuário adicionado com sucesso!');
 				$this->redirect(array('action'=>'index'));
 			} else {
-				$this->Session->setFlash('Erro ao adicionar Usuario!');
+				$this->Session->setFlash('Erro ao adicionar Usuário!');
 			}
 			
 		}
@@ -51,13 +51,13 @@ class UsuariosController extends AdminAppController {
 	
 		if ($this->request->isPost()) {
 			$data = $this->request->data;
-			$data['Usuario']['id'] = $Usuario_id;
+			$data['Usuario']['id'] = $usuario_id;
 			
 			if ($this->Usuario->save($data)) {
-				$this->Session->setFlash('Usuario editado com sucesso!');
+				$this->Session->setFlash('Usuário editado com sucesso!');
 				$this->redirect(array('action'=>'index'));
 			} else {
-				$this->Session->setFlash('Erro ao editar Usuario!');
+				$this->Session->setFlash('Erro ao editar Usuário!');
 			}
 			
 		}
@@ -65,49 +65,22 @@ class UsuariosController extends AdminAppController {
 		$this->set('Sexos', $this->Usuario->Sexo->find('list', array('fields'=>array('id', 'nome'))));
 		$this->set('NiveisAcessos', $this->Usuario->NiveisAcesso->find('list', array('fields'=>array('id', 'nome'))));
 		
-		$this->request->data = $this->Usuario->read(null, $Usuario_id);
+		$this->request->data = $this->Usuario->read(null, $usuario_id);
 
 		$this->render('form');
 	}
 	
-	public function emaberto() {
-		$this->uses = array('Chamada');
-		// Carrega dados do BD
-		$this->Chamada->Behaviors->attach('Containable');
-		$this->Chamada->contain(
-			'Contato',
-			'Instituicao',
-			'Instituicao.ContatosInstituicao',
-			'Instituicao.ContatosInstituicao.Contato',
-			'Instituicao.InstituicoesEndereco',
-			'Instituicao.InstituicoesEndereco.Cidade',
-			'Fornecedor',
-			'Fornecedor.FornecedoresEndereco',
-			'Fornecedor.FornecedoresEndereco.Cidade',
-			'Assunto',
-			'Filhas'
-		);
-		$user = $this->Auth->user();
-		$conditions = array(
-			'Chamada.Usuario_id' => $user['id'],
-			'Chamada.data_fim' => null
-		);
-		$chamadas = $this->Paginate('Chamada',$conditions);
-		$this->set('Chamadas',$chamadas);
-		
-	}
 	
 	public function login() {
 		
-		$this->set('title_for_layout','Sistema Cáritas');
+		$this->set('title_for_layout','Sistema Guimarães e Nobrega');
 	
 		if ($this->request->isPost()) {
-			
 			if ($this->Auth->login()) {
-				$this->Session->setFlash('Usuario autenticado com successo!');
+				$this->Bootstrap->setFlash('Usuário autenticado com successo!');
 				$this->redirect('/');
 			} else {
-				$this->Session->setFlash('Erro na autenticação do Usuario!');
+				$this->Bootstrap->setFlash('Erro na autenticação do Usuário!');
 			}
 			
 		}
@@ -117,7 +90,7 @@ class UsuariosController extends AdminAppController {
 	public function logout() {
 		
 		$this->Auth->logout();
-		$this->Session->setFlash('Você saiu do sistema!');
+		$this->Bootstrap->setFlash('Você saiu do sistema!');
 		$this->redirect('/');
 	}
 

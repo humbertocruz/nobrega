@@ -31,86 +31,59 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class SysAppController extends AppController {
-
-	public $helpers = array(
-		'Bootstrap.AuthBs',
-		'Bootstrap.Bootstrap',
-		'Html'
-	);
 	
-	public $uses = array('Sys.Projeto', 'Sys.Menu');
+	var $uses = array('Sys.Menu');
 	
-	public $components = array(
-		'Auth' => array(
-			'loginAction' => array(
-				'controller' => 'usuarios',
-				'action' => 'login',
-				'plugin' => 'admin'
-			),
-			'authError' => 'Você não tem acesso a essa área do sistema!',
-			'authenticate' => array(
-				'Form' => array(
-					'userModel' => 'Usuario',
-					'fields' => array('username' => 'email','password'=>'senha')
-				)
-			)
+	var $listActions = array(
+		array(
+			'text'=>'Adicionar',
+			'icon'=>'add',
+			'action' => 'add',
+			'style' => 'primary'
 		)
 	);
-
+	var $formActions = array(
+		array(
+			'text'=>'Gravar',
+			'icon'=>'floppy-disk',
+			'style' => 'primary',
+			'submit' => true
+		),
+		array(
+			'text'=>'Cancelar',
+			'icon'=>'remove',
+			'style' => 'warning',
+			'action' => 'index'
+		)
+	);
+	var $indexActions = array(
+		array(
+			'text'=>false,
+			'icon'=>'pencil',
+			'action' => 'edit',
+			'style' => 'info'
+		),
+		array(
+			'text'=>false,
+			'icon'=>'remove',
+			'action' => 'del',
+			'style' => 'danger'
+		)
+	);
+	
 	public function beforeFilter() {
-		
-		$user = $this->Auth->user();
-		
 		// Carregar Layout bootstrap
-		$this->layout = 'Bootstrap.bootstrap';
-
-		$this->Menu->Link->Behaviors->attach('Containable');
-		$this->Menu->Link->contain(
-			'Menu'
-		);
-		//$user = $this->Auth->user();
-		$conditions = array(
-			'Menu.nivel_acesso_id' => $user['nivel_acesso_id']
-		);
-
-		$Links = $this->Menu->Link->find('threaded', array('conditions'=>$conditions));
-		$menus = $Links;
-		
-		//$allModelNames = Configure::listObjects('model');
-		//pr($allModelNames);
-		
-		$conditions = array(
-			'Permissao.nivel_acesso_id' => $user['nivel_acesso_id']
-		);
-		$PermissoesUser = $this->Menu->NiveisAcesso->Permissao->find('all', array('conditions'=>$conditions));
-		
-		$Permissoes = array();
-		foreach($PermissoesUser as $Permissao) {
-			$Permissoes[$Permissao['Permissao']['controller']][$Permissao['Permissao']['action']] = true;
-		}
-		$controller = $this->params['controller'];
-		$action = $this->params['action'];
-		
-		if ( ($controller == 'Status' and $action == 'index') or $user['NiveisAcesso']['admin'] == 1 ) {
+		$this->layout = 'Bootstrap.default';
+		$this->set('title_for_layout', 'Guimarães e Nobrega');
+		$this->agora = getdate(time());
 			
-		} else {
-			if ( !isset( $Permissoes[$controller][$action] ) ) {
-				$this->Session->setFlash( 'Seu usuário não tem permissão de acesso a esta página!' );
-				$this->redirect( '/' );
-			}
-		}
-		
-		
-		$this->set('UserPermissoes', $Permissoes);
-		
-		// Texto do header para os forms add e edit
-		$txtAction = '';
-		if ($this->action == 'edit' ) $txtAction = 'Editar ';
-		if ($this->action == 'add' ) $txtAction = 'Adicionar';
-		$this->set('txtAction', $txtAction);
-		
-		$this->set('superMenu', $menus);
+		$this->set('menus', $this->Menus->generate($this->Menu));
 		$this->set('usuario', $this->Auth->user());
+		
+		$this->set('indexActions', $this->indexActions);
+		$this->set('listActions', $this->listActions);
+		$this->set('formActions', $this->formActions);
+
 	}
 
 }

@@ -32,9 +32,37 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 
+	public $helpers = array(
+		'Bootstrap.AuthBs',
+		'Bootstrap.Bootstrap',
+		'Html'
+	);
+
+	public $components = array(
+		'Auth' => array(
+			'loginAction' => array(
+				'controller' => 'usuarios',
+				'action' => 'login',
+				'plugin' => 'admin'
+			),
+			'authError' => 'Você não tem acesso a essa área do sistema!',
+			'authenticate' => array(
+				'Form' => array(
+					'userModel' => 'Usuario',
+					'fields' => array('username' => 'login','password'=>'senha')
+				)
+			)
+		),
+		'Sys.Menus',
+		'Paginator',
+		'Session',
+		'Bootstrap.Bootstrap'
+	);
+
 	public function beforeFilter() {
 	
 		$this->layout = 'Bootstrap.bootstrap';
+		
 	
 	}
 }

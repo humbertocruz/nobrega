@@ -1,7 +1,7 @@
 <?php
 class MenusController extends AdminAppController {
 
-	public $uses = array('Caritas.Menu');
+	public $uses = array('Sys.Menu');
 
 	public function index() {
 		// Configura Titulo da Pagina

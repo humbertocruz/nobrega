@@ -1,7 +1,7 @@
 <?php
 class NiveisAcessosController extends AdminAppController {
 
-	public $uses = array('Caritas.NiveisAcesso');
+	public $uses = array('Sys.NiveisAcesso');
 
 	public function index() {
 		// Configura Titulo da Pagina

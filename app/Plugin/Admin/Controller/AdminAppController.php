@@ -32,7 +32,7 @@ App::uses('Controller', 'Controller');
  */
 class AdminAppController extends AppController {
 
-	public $uses = array('Caritas.Menu');
+	public $uses = array('Admin.Menu');
 
 	public $helpers = array(
 		'Bootstrap.AuthBs',
@@ -43,18 +43,19 @@ class AdminAppController extends AppController {
 	public $components = array(
 		'Auth' => array(
 			'loginAction' => array(
-				'controller' => 'atendentes',
+				'controller' => 'usuarios',
 				'action' => 'login',
 				'plugin' => 'admin'
 			),
 			'authError' => 'Did you really think you are allowed to see that?',
 			'authenticate' => array(
 				'Form' => array(
-					'userModel' => 'Caritas.Atendente',
-					'fields' => array('username' => 'email','password'=>'senha')
+					'userModel' => 'Admin.Usuario',
+					'fields' => array('username' => 'login','password'=>'senha')
 				)
 			)
-		)
+		),
+		'Admin.MenuAdmin'
 	);
 
 	public function beforeFilter() {
@@ -67,81 +68,11 @@ class AdminAppController extends AppController {
 		}
 		
 		// Carregar Layout bootstrap
-		$this->layout = 'Bootstrap.bootstrap-admin';
+		$this->layout = 'Admin.admin';
 
-		$menus = array(
-			array(
-				'Menu' => array(
-					'title' => 'Menu Admin'
-				),
-				'Links' => array(
-					array(
-						'Link' => array(
-							'id' => 1,
-							'text' => 'Usuários'
-						),
-						'children' => array(
-							array(
-								'Link' => array(
-									'id' => 1,
-									'text' => 'Atendente',
-									'plugin' => 'admin',
-									'controller' => 'atendentes',
-									'action' => 'index'
-								)
-							),
-							array(
-								'Link' => array(
-									'id' => 1,
-									'text' => 'Níveis de Acesso',
-									'plugin' => 'admin',
-									'controller' => 'niveis_acessos',
-									'action' => 'index'
-								)
-							)
-						)
-					),
-					array(
-						'Link' => array(
-						'id' => 1,
-						'text' => 'Sistema'
-					),
-					'children' => array(
-						array(
-							'Link' => array(
-								'id' => 1,
-								'text' => 'Menus',
-								'plugin' => 'admin',
-								'controller' => 'menus',
-								'action' => 'index'
-							)
-						)
-					)
-				)
-			)
-		)
-	);
-	
-		$this->set('action_name', $this->action);
 
-		$user = $this->Auth->user();
-		if ($user) {		
-		$conditions = array(
-			'Permissao.nivel_acesso_id' => $user['nivel_acesso_id']
-		);
-		
-		$PermissoesUser = $this->Menu->NiveisAcesso->Permissao->find('all', array('conditions'=>$conditions));
-		
-		$Permissoes = array();
-		foreach($PermissoesUser as $Permissao) {
-			$Permissoes[$Permissao['Permissao']['controller']][$Permissao['Permissao']['action']] = true;
-		}
-		
-		$this->set('UserPermissoes', $Permissoes);
-
-		$this->set('menus', $menus);
+		$this->set('menus', $this->MenuAdmin->generate());
 		$this->set('usuario', $this->Auth->user());
-		}
 	}
 
 }

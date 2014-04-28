@@ -30,4 +30,12 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class SysAppModel extends AppModel {
+	
+	public function dateFormatAfterFind($dateString) {
+		return date('d/m/Y', strtotime($dateString));
+	}
+	
+	public function dateFormatBeforeSave($dateString) {
+		return date('Y-m-d', strtotime($dateString));
+	}
 }

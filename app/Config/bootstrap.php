@@ -109,7 +109,7 @@ CakeLog::config('error', array(
 CakePlugin::load(
     array(
         'Bootstrap' => array('bootstrap'=>true,'routes' => true),
-        'Sys',
-        'Admin'
+        'Admin' => array('routes' => true),
+		'Sys'
     )
 );
