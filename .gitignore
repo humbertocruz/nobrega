@@ -4,7 +4,8 @@
 /app/tmp
 /lib/Cake/Console/Templates/skel/tmp/
 /plugins
-/app/Plugins
+/app/Plugins/Admin
+/app/Plugins/Bootstrap
 /vendors
 /build
 /dist
