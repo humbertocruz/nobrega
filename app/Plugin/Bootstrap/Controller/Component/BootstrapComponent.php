@@ -5,7 +5,7 @@ class BootstrapComponent extends Component {
         'Session'
     );
     
-    public function setFlash($message, $style = 'success') {
+    public function setFlash($message, $style = 'info') {
         $this->Session->setFlash($message, 'Bootstrap.flash', array('style'=>$style));
     }
     

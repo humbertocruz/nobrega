@@ -1,15 +1,15 @@
 <?php
-class MenusController extends AdminAppController {
+class PermissoesController extends AdminAppController {
 
-	public $uses = array('Admin.Menu');
+	public $uses = array('Admin.Permissao');
 	
 	function save($id = null) {
 		if ($this->request->isPost()) {
 			$data = $this->request->data;
 			if ( $this->action == 'edit' ) {
-				$data['Menu']['id'] = $id;
+				$data['Permissao']['id'] = $id;
 			}
-			if ($this->Menu->save($data)) {
+			if ($this->Permissao->save($data)) {
 				$this->Bootstrap->setFlash('Registro salvo com sucesso!');
 				$this->redirect(array('action'=>'index'));
 			} else {
@@ -19,23 +19,23 @@ class MenusController extends AdminAppController {
 	}
 	
 	function related() {
-		$Grupos = array('0'=>'Selecione') + $this->Menu->Grupo->find('list',array('fields'=>array('id','nome')));
+		$Grupos = $this->Permissao->Grupo->find('list',array('fields'=>array('id','nome')));
 		$this->set('Grupos',$Grupos);
 	}
 	
 	public function index() {
 	
-		$this->set('title_for_layout','Menus - Lista');
+		$this->set('title_for_layout','Permissões - Lista');
 		
-		$this->Menu->Behaviors->attach('Containable');
-		$this->Menu->contain('Grupo');
-		$Menus = $this->Paginator->paginate('Menu');
-		$this->set('data', $Menus);
+		$this->Permissao->Behaviors->attach('Containable');
+		$this->Permissao->contain('Grupo');
+		$Permissoes = $this->Paginator->paginate('Permissao');
+		$this->set('data', $Permissoes);
 	}
 	
 	public function add() {
 	
-		$this->set('title_for_layout','Menus - Adicionar');
+		$this->set('title_for_layout','Permissões - Adicionar');
 
 		$this->save();
 		
@@ -46,12 +46,12 @@ class MenusController extends AdminAppController {
 	
 	public function edit($menu_id = null) {
 	
-		$this->set('title_for_layout','Menus - Editar');
+		$this->set('title_for_layout','Permissões - Editar');
 		
 		$this->save($menu_id);
 	
-		$Menu = $this->Menu->read(null, $menu_id);
-		$this->request->data = $Menu;
+		$Permissao = $this->Permissao->read(null, $menu_id);
+		$this->request->data = $Permissao;
 		
 		$this->related();
 
@@ -60,7 +60,7 @@ class MenusController extends AdminAppController {
 	
 	public function del($id = null) {
 		if ($this->request->isPost()) {
-			$Grupo = $this->Menu->delete($id);
+			$Grupo = $this->Permissao->delete($id);
 			$this->Bootstrap->setFlash('Registro excluido com sucesso!');
 			$this->redirect( array( 'action'=>'index' ));
 		}
@@ -68,13 +68,13 @@ class MenusController extends AdminAppController {
 	
 	public function filter() {
 		$this->related();
-		if ($this->Session->check('filterMenu')) {
-			$this->request->data = $this->Session->read('filterMenu');
+		if ($this->Session->check('filterPermissao')) {
+			$this->request->data = $this->Session->read('filterPermissao');
 		}
 	}
 	
 	public function filterApply() {
-		$filters = $this->Session->read('filterMenu');
+		$filters = $this->Session->read('filterPermissao');
 		$conditions = array();
 		foreach ($filters as $key=>$value) {
 			$conditions[$key] = '%'.$value.'%';

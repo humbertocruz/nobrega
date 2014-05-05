@@ -15,7 +15,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="/portal">Portal</a>
+			<a class="navbar-brand" href="/admin">Cáritas</a>
 		</div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse">
@@ -39,7 +39,7 @@
 			</ul>
 			<div class="btn-group navbar-right">
 				<a href="/admin" type="button" class="btn btn-default navbar-btn">Admin</a>
-				<a href="/" type="button" class="btn btn-default navbar-btn">Site</a>
+				<a href="/" type="button" class="btn btn-default navbar-btn">Sistema</a>
 			</div>
 		</div>
 	</div>

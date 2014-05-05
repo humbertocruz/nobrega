@@ -40,22 +40,11 @@
 			<?php } ?>
 			<?php } ?>
 		</ul>
-		<?php if (AuthComponent::user()) { ; ?>
-		<ul class="nav navbar-nav navbar-right">
-			<li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $usuario['nome'];?> <b class="caret"></b></a>
-				<ul class="dropdown-menu">
-					<li><a href="/logout">Sair</a></li>
-					<li><?php echo $this->Html->link('Alterar Dados', array('plugin'=>'caritas', 'controller'=>'status', 'action'=>'perfil')); ?></li>
-					<li class="divider"></li>
-					<li><a href="#">Nível: <?php echo $usuario['NiveisAcesso']['nome'];?></a></li>
-					<?php if ($usuario['NiveisAcesso']['nome'] == 'Administrador') { ?>
-					<li class="divider"></li>
-					<li><?php echo $this->Html->link('Administração', array('plugin'=>'admin', 'controller'=>'panel', 'action'=>'index')); ?></li>
-					<?php } ?>
-				</ul>
-			</li>
-		</ul>
+		<?php if (AuthComponent::user()) { ?>
+		<div class="btn-group navbar-right">
+			<a href="<?php echo $system['url'];?>" type="button" class="btn btn-default navbar-btn"><?php echo $system['name'];?></a>
+			<a href="/logout" type="button" class="btn btn-default navbar-btn">Sair</a>
+		</div>
 		<?php } ?>
 	</div>
 </nav>

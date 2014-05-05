@@ -3,6 +3,21 @@ class UsuariosController extends AdminAppController {
 
 	public $uses = array('Admin.Usuario');
 	
+	public $listActions = array(
+		array(
+			'text' => 'Adicionar',
+			'icon' => 'add',
+			'style' => 'success',
+			'action' => 'add'
+		),
+		array(
+			'text' => 'Filtrar',
+			'icon' => 'filter',
+			'style' => 'default',
+			'action' => 'filter'
+		)
+	);
+	
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('password', 'logout');
@@ -51,6 +66,8 @@ class UsuariosController extends AdminAppController {
 	function related() {
 		$Grupos = array('0'=>'Selecione') + $this->Usuario->Grupo->find('list',array('fields'=>array('id','nome')));
 		$this->set('Grupos',$Grupos);
+		$Sites = array('0'=>'Selecione') + $this->Usuario->Site->find('list',array('fields'=>array('id','nome')));
+		$this->set('Sites', $Sites);
 	}
 	
 	public function index() {
@@ -61,13 +78,13 @@ class UsuariosController extends AdminAppController {
 		$this->Usuario->contain(
 			'Grupo'
 		);
-		$conditions = $this->filterApply();
-		
-		$Usuarios = $this->Paginator->paginate('Usuario', $conditions);
+		$Usuarios = $this->Paginator->paginate('Usuario');
 		$this->set('data', $Usuarios);
 	}
 	
 	public function add() {
+	
+		$this->set('title_for_layout','Usuários - Adicionar');
 
 		$this->save();
 		
@@ -77,6 +94,8 @@ class UsuariosController extends AdminAppController {
 	}
 	
 	public function edit($usuario_id = null) {
+	
+		$this->set('title_for_layout','Usuários - Editar');
 		
 		$this->save($usuario_id);
 	
@@ -98,11 +117,6 @@ class UsuariosController extends AdminAppController {
 	}
 	
 	public function filter() {
-		if ($this->request->isPost()) {
-			$this->Session->write('filterUsuario', $this->request->data);
-			$this->Bootstrap->setFlash('Usuário excluido com sucesso!');
-			$this->redirect( array( 'action'=>'index' ));
-		}
 		$this->related();
 		if ($this->Session->check('filterUsuario')) {
 			$this->request->data = $this->Session->read('filterUsuario');
@@ -110,42 +124,23 @@ class UsuariosController extends AdminAppController {
 	}
 	
 	public function filterApply() {
-		if ($this->Session->check('filterUsuario')) {
-			$filters = $this->Session->read('filterUsuario');
-		} else {
-			$filters = array();
-		}
-		
+		$filters = $this->Session->read('filterUsuario');
 		$conditions = array();
-		
-		foreach ($filters as $mkey=>$mvalues) {
-		foreach ($mvalues as $key=>$value) {
-			if ($value) {
-			$conditions[$mkey.'.'.$key.' like'] = '%'.$value.'%';
-			}
+		foreach ($filters as $key=>$value) {
+			$conditions[$key] = '%'.$value.'%';
 		}
-		}
-		
 		return $conditions;
 	}
 	
-	public function login($showpass = false) {
+	public function login() {
 		
 		$this->set('title_for_layout','Portal Fenapaes');
 		
 		if ($this->request->isPost()) {
-			$this->Usuario->Behaviors->attach('Containable');
-			$this->Usuario->contain(
-				'Grupo',
-				'Grupo.Permissao'
-			);
 			if ($this->Auth->login()) {
 				$this->Bootstrap->setFlash('Usuário autenticado com successo!');
-				$this->redirect(array('plugin'=>'admin','controller'=>'usuarios','action'=>'home'));
+				$this->redirect(array('plugin'=>'Portal','controller'=>'Status','action'=>'index'));
 			} else {
-				if ($this->showPass) {
-					$this->set('pass', $this->Auth->password($this->data['Usuario']['senha']));
-				}
 				unset($this->request->data['Usuario']['senha']);
 				$this->Bootstrap->setFlash('Erro na autenticação do Usuário!','danger');
 			}
@@ -156,7 +151,6 @@ class UsuariosController extends AdminAppController {
 	public function logout() {
 		
 		$this->Auth->logout();
-		$this->Session->delete('selected_site');
 		$this->Bootstrap->setFlash('Você saiu do sistema!');
 		$this->redirect('/');
 	}

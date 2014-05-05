@@ -31,7 +31,7 @@ class BootstrapHelper extends AppHelper {
 		$options = array_merge($defaults, $options);
 		
 		if ($options['icon']) {
-			$icon_span = '<span class="glyphicon glyphicon-'.$options['icon'].'"></span>';
+			$icon_span = '<i class="glyphicon glyphicon-'.$options['icon'].'"></i>';
 		} else {
 			$icon_span = '';
 		}
@@ -375,7 +375,9 @@ class BootstrapHelper extends AppHelper {
 		<?php return ob_get_clean();
 	}
 	
-	public function setFlash($message, $style = 'default') {
-		return $this->Session->setFlash($message, array('element'=>'Bootstrap.flash', 'class'=>'alert alert-'.$style.' alert-dismissable'));
+	/*
+	public function setFlash($message, $style = 'info') {
+		return $this->Session->setFlash($message, 'Bootstrap.flash', array('style'=>$style));
 	}
+	*/
 }

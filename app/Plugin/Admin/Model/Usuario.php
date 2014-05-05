@@ -1,12 +1,23 @@
 <?php
-class Usuario extends AppModel {
-	var $useDbConfig = 'Admin';
-	var $useTable = 'usuarios';
-	
-	var $belongsTo = array(
-		'NiveisAcesso' => array(
-			'className' => 'Admin.NiveisAcesso',
-			'foreignKey' => 'nivel_acesso_id'
+App::uses('AppModel', 'Model');
+class Usuario extends AdminAppModel {
+	public $useDbConfig = 'Admin';
+	public $useTable = 'usuarios';
+	public $displayField = 'nome';
+	public $belongsTo = array(
+		'Grupo' => array(
+			'className' => 'Admin.Grupo',
+			'foreignKey' => 'grupo_id'
 		)
 	);
+	// relacao com usuario do sistema
+	/*
+	 *public $hasOne = array(
+		'Atendente' => array(
+			'className' => 'Atendente',
+			'foreignKey' => 'usuario_id'
+		)
+	);
+	*/
+	
 }

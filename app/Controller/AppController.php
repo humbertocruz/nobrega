@@ -49,7 +49,7 @@ class AppController extends Controller {
 			'authenticate' => array(
 				'Form' => array(
 					'userModel' => 'Usuario',
-					'fields' => array('username' => 'login','password'=>'senha')
+					'fields' => array('username' => 'email','password'=>'senha')
 				)
 			)
 		),
@@ -62,6 +62,13 @@ class AppController extends Controller {
 	public function beforeFilter() {
 	
 		$this->layout = 'Bootstrap.bootstrap';
+		
+		$this->system = array(
+			'url' => '/sys',
+			'plugin' => 'sys',
+			'name' => 'G&N'
+		);
+		$this->set('system', $this->system);
 		
 	
 	}
