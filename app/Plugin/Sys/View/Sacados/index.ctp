@@ -25,14 +25,32 @@ $this->end(); ?>
 
 <?php $this->start('table-body'); ?>
 	<?php foreach ($data as $Sacado) { 
-		if (count($Sacado['DocumentoOut'] > 0)) {
+		$noDocs = true;
+		if (count($Sacado['DocumentoOut'])>0) {
 			$btnDocs = '<div class="btn-group">
-			<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Documento&nbsp;<span class="caret"></span></button>
+			<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Outorgante&nbsp;&nbsp;<span class="caret"></span></button>
 			<ul class="dropdown-menu" role="menu">
-				<li>'.$this->Html->link('Contrato', array('action'=>'documentos','contrato',$Sacado['Sacado']['id'])).'</li>
-				<li>'.$this->Html->link('Procuração', array('action'=>'documentos','procuracao',$Sacado['Sacado']['id'])).'</li>
+				<li>'.$this->Html->link('Contrato', array('action'=>'documentos','contrato',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
+				<li>'.$this->Html->link('Procuração', array('action'=>'documentos','procuracao',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
+				<li>'.$this->Html->link('Hipoteca', array('action'=>'documentos','hipoteca',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
+				<li>'.$this->Html->link('Recibo', array('action'=>'documentos','recibo',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
+				<li>'.$this->Html->link('Promissória', array('action'=>'documentos','promissoria',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
 			</ul>
 			</div>';
+			$noDocs = false;
+		}
+		if (count($Sacado['DocumentoRep'])>0) {
+			$btnDocs = '<div class="btn-group">
+			<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Representante&nbsp;&nbsp;<span class="caret"></span></button>
+			<ul class="dropdown-menu" role="menu">
+				<li>'.$this->Html->link('Contrato', array('action'=>'documentos','contrato',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
+				<li>'.$this->Html->link('Procuração', array('action'=>'documentos','procuracao',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
+				<li>'.$this->Html->link('Hipoteca', array('action'=>'documentos','hipoteca',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
+				<li>'.$this->Html->link('Recibo', array('action'=>'documentos','recibo',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
+				<li>'.$this->Html->link('Promissória', array('action'=>'documentos','promissoria',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
+			</ul>
+			</div>';
+			$noDocs = false;
 		}
 	?>
 	<tr>
@@ -41,7 +59,7 @@ $this->end(); ?>
 		<td><?php echo $Sacado['Sacado']['nome_razaosocial']; ?></td>
 		<td><?php echo count($Sacado['BoletosAntigo']); ?></td>
 		<td><?php echo count($Sacado['BoletosNovo']); ?></td>
-		<td><?php echo (count( $Sacado['DocumentoOut']) > 0)?( $btnDocs ):('Nenhum'); ?></td>
+		<td><?php echo ($noDocs)?('Nenhum'):( $btnDocs ); ?></td>
 	</tr>
 	<?php } ?>
 <?php $this->end(); ?>

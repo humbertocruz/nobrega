@@ -32,27 +32,26 @@ App::uses('Controller', 'Controller');
  */
 class SysAppController extends AppController {
 	
-	var $uses = array('Sys.Menu');
+	var $uses = array('Admin.Menu');
 	
 	var $listActions = array(
 		array(
 			'text'=>'Adicionar',
-			'icon'=>'add',
+			'icon'=>'plus',
 			'action' => 'add',
-			'style' => 'primary'
+			'style' => 'success'
 		)
 	);
 	var $formActions = array(
 		array(
 			'text'=>'Gravar',
 			'icon'=>'floppy-disk',
-			'style' => 'primary',
+			'style' => 'success',
 			'submit' => true
 		),
 		array(
 			'text'=>'Cancelar',
 			'icon'=>'remove',
-			'style' => 'warning',
 			'action' => 'index'
 		)
 	);
@@ -60,18 +59,17 @@ class SysAppController extends AppController {
 		array(
 			'text'=>false,
 			'icon'=>'pencil',
-			'action' => 'edit',
-			'style' => 'info'
+			'action' => 'edit'
 		),
 		array(
 			'text'=>false,
 			'icon'=>'remove',
-			'action' => 'del',
-			'style' => 'danger'
+			'action' => 'del'
 		)
 	);
 	
 	public function beforeFilter() {
+		parent::beforeFilter();
 		// Carregar Layout bootstrap
 		$this->layout = 'Bootstrap.default';
 		$this->set('title_for_layout', 'Guimarães e Nobrega');

@@ -64,7 +64,7 @@ class AppController extends Controller {
 		$this->layout = 'Bootstrap.bootstrap';
 		
 		$this->system = array(
-			'url' => '/sys',
+			'url' => '/',
 			'plugin' => 'sys',
 			'name' => 'G&N'
 		);

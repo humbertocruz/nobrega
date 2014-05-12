@@ -29,10 +29,10 @@
 				<ul class="dropdown-menu">
 					<?php foreach ($link['children'] as $sublink) {
 						//$plugin = ($sublink['plugin'])?(''):('');
-						$active = ($sublink['Link']['controller'] == $this->params['controller'] AND $sublink['Link']['action'] == $this->params['action'])?('class="active"'):('');
+						$active = ($sublink['Permissao']['controller'] == $this->params['controller'] AND $sublink['Permissao']['action'] == $this->params['action'])?('class="active"'):('');
 					?>
 					<li <?php echo $active; ?>>
-					<?php echo $this->Html->link($sublink['Link']['texto'], array('plugin'=>$sublink['Link']['plugin'],'controller'=>$sublink['Link']['controller'],'action'=>$sublink['Link']['action'])); ?>
+					<?php echo $this->Html->link($sublink['Link']['texto'], array('plugin'=>$sublink['Permissao']['plugin'],'controller'=>$sublink['Permissao']['controller'],'action'=>$sublink['Permissao']['action'])); ?>
 					</li>
 					<?php } ?>
 				</ul>
@@ -42,7 +42,7 @@
 		</ul>
 		<?php if (AuthComponent::user()) { ?>
 		<div class="btn-group navbar-right">
-			<a href="<?php echo $system['url'];?>" type="button" class="btn btn-default navbar-btn"><?php echo $system['name'];?></a>
+			<a href="/admin" type="button" class="btn btn-default navbar-btn">Admin</a>
 			<a href="/logout" type="button" class="btn btn-default navbar-btn">Sair</a>
 		</div>
 		<?php } ?>

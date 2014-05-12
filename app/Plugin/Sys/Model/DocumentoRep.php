@@ -6,7 +6,11 @@ class DocumentoRep extends SysAppModel {
 	var $useDbConfig = 'default';
 	
 	var $belongsTo = array(
-		'Sacado' => array(
+		'Outorgante' => array(
+			'className' => 'Sys.Sacado',
+			'foreignKey' => 'outorgante_id'
+		),
+		'Representante' => array(
 			'className' => 'Sys.Sacado',
 			'foreignKey' => 'representante_id'
 		)

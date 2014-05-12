@@ -10,20 +10,17 @@ class SacadosController extends SysAppController {
 		array(
 			'text'=>false,
 			'icon'=>'eye-open',
-			'action' => 'view',
-			'style' => 'primary'
+			'action' => 'view'
 		),
 		array(
 			'text'=>false,
 			'icon'=>'pencil',
-			'action' => 'edit',
-			'style' => 'info'
+			'action' => 'edit'
 		),
 		array(
 			'text'=>false,
 			'icon'=>'remove',
-			'action' => 'del',
-			'style' => 'danger'
+			'action' => 'del'
 		)
 	);
 	
@@ -121,10 +118,18 @@ class SacadosController extends SysAppController {
 		$this->set('Sacado',$Sacado);
 	}
 	
-	public function documentos($tipo, $id) {
-		$Sacado = $this->Sacado->read(null, $id);
-		$this->set('Sacado',$Sacado);
+	public function documentos($tipo, $id, $modelo = 'Out') {
+		$this->Sacado->DocumentoOut->Behaviors->attach('Containable');
+		$this->Sacado->DocumentoOut->contain('Outorgante','Outorgante.EstadosCivil','Representante','Representante.EstadosCivil');
+		if ($modelo == 'Out') {
+			$Documento = $this->Sacado->DocumentoOut->read(null, $id);
+		} else {
+			$Documento = $this->Sacado->DocumentoRep->read(null, $id);
+		}
+		//pr($Documento);
+		$this->set('Documento',$Documento);
 		$this->set('tipo', $tipo);
+		$this->set('modelo', $modelo);
 	}
 	
 	public function add() {

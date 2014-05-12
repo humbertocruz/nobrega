@@ -23,7 +23,7 @@
 	<tr>
 		<td><?php echo $this->Bootstrap->actions($Model['DocumentoOut']['id'],$indexActions); ?></td>
 		<td><?php echo $Model['DocumentoOut']['data']; ?></td>
-		<td><?php echo $Model['Sacado']['nome_razaosocial']; ?></td>
+		<td><?php echo $Model['Outorgante']['nome_razaosocial']; ?></td>
 		<td><?php echo $Model['DocumentoOut']['valor']; ?></td>
 		<td><?php echo $Model['DocumentoOut']['parcelas']; ?></td>
 	</tr>

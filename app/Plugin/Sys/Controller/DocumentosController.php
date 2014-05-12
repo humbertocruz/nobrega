@@ -30,6 +30,7 @@ class DocumentosController extends SysAppController {
 	
 	public function related() {
 		$this->set('Outorgantes', array('0'=>'Pesquise Outorgante'));
+		$this->set('Representates', array('0'=>'Pesquise Representante'));
 		//$this->set('tipospessoa', $this->Sacado->TiposPessoa->find('list',$this->field_list_nome));
 		//$this->set('modelospessoa', $this->Sacado->ModelosPessoa->find('list',$this->field_list_nome));
 	}

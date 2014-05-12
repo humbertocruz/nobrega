@@ -1,5 +1,6 @@
 <div style="width: 600px; margin: 10px auto; text-align: justify;">
 <strong>GUIMARAES & NOBREGA ADVOCACIA</strong>
+<?php echo $this->fetch('debug'); ?>
 <br>
 <br>
     <h2><center>
@@ -17,10 +18,11 @@ residente na <?php echo $this->fetch('outorgante_endereco'); ?>, <?php echo $thi
 <?php echo $this->fetch('outorgante_uf'); ?> , Telefone: <?php echo $this->fetch('outorgante_telefone'); ?>
 <?php if( array_search('representante_nome', $this->blocks())) { ?>
 , neste ato
-representado por {{documento.representante.nomecompleto|upper}},
-{{documento.representante.nacionalidade}}, {{documento.representante.estadocivil}}, {{documento.representante.profissao}}, portador(a) da
-Carteira de Identidade de nº {{documento.representante.docnumero}} {{documento.representante.docorgao}}, inscrito no CPF: sob o nº {{documento.representante.cpf}},
-residente(s) à {{documento.representante.endereco}} {{documento.representante.bairro}}, domiciliado(a) em {{documento.representente.cidade}}-{{documento.representante.uf.sigla}}.
+representado por <?php echo $this->fetch('representante_nome'); ?>, <?php echo $this->fetch('representante_nacionalidade'); ?>, <?php echo $this->fetch('representante_estadocivil'); ?>,
+<?php echo $this->fetch('representante_profissao'); ?> portador da Carteira de
+Identidade de n° <?php echo $this->fetch('representante_docnumero'); ?> <?php echo $this->fetch('representante_docorgao'); ?> , inscrito no CPF sob o n° <?php echo $this->fetch('representante_cpfcnpj'); ?>,
+residente na <?php echo $this->fetch('representante_endereco'); ?>, <?php echo $this->fetch('representante_cidade'); ?>,
+<?php echo $this->fetch('representante_uf'); ?> , Telefone: <?php echo $this->fetch('representante_telefone'); ?>.
 <?php } else { ?>
 .
 <?php } ?>
