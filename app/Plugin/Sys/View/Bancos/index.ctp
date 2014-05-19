@@ -1,6 +1,10 @@
 <?php $this->extend('Bootstrap./Common/index'); ?>
+<?php $this->assign('panelStyle','primary'); ?>
+<?php $this->assign('pageHeader','Bancos'); ?>
 
-<?php $this->start('pageHeader');?>Bancos<?php $this->end(); ?>
+<?php $this->start('actions'); ?>
+	<?php echo $this->Bootstrap->actions(null, $listActions); ?>
+<?php $this->end(); ?>
 
 <<?php $this->start('table-tr'); ?>
 	<tr class="active">
@@ -12,7 +16,7 @@
 <?php $this->start('table-body'); ?>
 	<?php foreach ($data as $Banco) { ?>
 	<tr>
-		<td><?php echo $this->Bootstrap->basicActions($Banco['Banco']['id']); ?></td>
+		<td><?php echo $this->Bootstrap->actions($Banco['Banco']['id'], $indexActions); ?></td>
 		<td><?php echo $Banco['Banco']['nome']; ?></td>
 	</tr>
 	<?php } ?>

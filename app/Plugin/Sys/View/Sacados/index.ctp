@@ -8,10 +8,6 @@
 	<?php echo $this->Bootstrap->actions(null, $listActions); ?>
 <?php $this->end(); ?>
 
-<?php $this->start('table-tr');
-	$this->Bootstrap-
-$this->end(); ?>
-
 <?php $this->start('table-tr'); ?>
 	<tr class="active">
 		<th class="col-md-2">&nbsp;</th>
@@ -32,7 +28,7 @@ $this->end(); ?>
 			<ul class="dropdown-menu" role="menu">
 				<li>'.$this->Html->link('Contrato', array('action'=>'documentos','contrato',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
 				<li>'.$this->Html->link('Procuração', array('action'=>'documentos','procuracao',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
-				<li>'.$this->Html->link('Hipoteca', array('action'=>'documentos','hipoteca',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
+				<li>'.$this->Html->link('Hipossuficiência', array('action'=>'documentos','hipossuficiencia',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
 				<li>'.$this->Html->link('Recibo', array('action'=>'documentos','recibo',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
 				<li>'.$this->Html->link('Promissória', array('action'=>'documentos','promissoria',$Sacado['DocumentoOut'][0]['id'],'Out')).'</li>
 			</ul>
@@ -45,7 +41,7 @@ $this->end(); ?>
 			<ul class="dropdown-menu" role="menu">
 				<li>'.$this->Html->link('Contrato', array('action'=>'documentos','contrato',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
 				<li>'.$this->Html->link('Procuração', array('action'=>'documentos','procuracao',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
-				<li>'.$this->Html->link('Hipoteca', array('action'=>'documentos','hipoteca',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
+				<li>'.$this->Html->link('Hipossuficiência', array('action'=>'documentos','hipossuficiencia',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
 				<li>'.$this->Html->link('Recibo', array('action'=>'documentos','recibo',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
 				<li>'.$this->Html->link('Promissória', array('action'=>'documentos','promissoria',$Sacado['DocumentoRep'][0]['id'],'Rep')).'</li>
 			</ul>

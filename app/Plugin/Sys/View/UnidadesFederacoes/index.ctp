@@ -1,6 +1,10 @@
 <?php $this->extend('Bootstrap./Common/index'); ?>
+<?php $this->assign('panelStyle','primary'); ?>
+<?php $this->assign('pageHeader','Unidades de Federação'); ?>
 
-<?php $this->start('pageHeader');?>Unidades de Federação<?php $this->end(); ?>
+<?php $this->start('actions'); ?>
+	<?php echo $this->Bootstrap->actions(null, $listActions); ?>
+<?php $this->end(); ?>
 
 <<?php $this->start('table-tr'); ?>
 	<tr class="active">
@@ -13,7 +17,7 @@
 <?php $this->start('table-body'); ?>
 	<?php foreach ($data as $UnidadesFederacao) { ?>
 	<tr>
-		<td><?php echo $this->Bootstrap->basicActions($UnidadesFederacao['UnidadesFederacao']['id']); ?></td>
+		<td><?php echo $this->Bootstrap->actions($UnidadesFederacao['UnidadesFederacao']['id'], $indexActions); ?></td>
 		<td><?php echo $UnidadesFederacao['UnidadesFederacao']['sigla']; ?></td>
 		<td><?php echo $UnidadesFederacao['UnidadesFederacao']['nome']; ?></td>
 	</tr>

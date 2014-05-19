@@ -1,13 +1,17 @@
 <?php
 if ($tipo == 'contrato') $this->extend('contrato'); 
-if ($tipo == 'procuracao') $this->extend('procuracao'); 
+if ($tipo == 'procuracao') $this->extend('procuracao');
+if ($tipo == 'hipossuficiencia') $this->extend('hipossuficiencia');
+if ($tipo == 'recibo') $this->extend('recibo');
+if ($tipo == 'promissoria') $this->extend('promissoria');
+
 ?>
 
 <?php
 	$infos = array(
 		'outorgante_nome' => $Documento['Outorgante']['nome_razaosocial'],
 		'outorgante_nacionalidade' => $Documento['Outorgante']['nacionalidade'],
-		'outorgante_estadocivil' => $Documento['Outorgante']['EstadosCivil']['descricao'],
+		'outorgante_estadocivil' => (isset($Documento['Outorgante']['EstadosCivil']['descricao']))?($Documento['Outorgante']['EstadosCivil']['descricao']):('Nenhum'),
 		'outorgante_docnumero' => $Documento['Outorgante']['docnumero'],
 		'outorgante_docorgao' => $Documento['Outorgante']['docorgao'],
 		'outorgante_cpfcnpj' => $Documento['Outorgante']['cpf_cnpj'],
@@ -21,7 +25,7 @@ if ($tipo == 'procuracao') $this->extend('procuracao');
 	$infos = $infos + array(
 		'representante_nome' => $Documento['Representante']['nome_razaosocial'],
 		'representante_nacionalidade' => $Documento['Representante']['nacionalidade'],
-		'representante_estadocivil' => $Documento['Representante']['EstadosCivil']['descricao'],
+		'representante_estadocivil' => (isset($Documento['Representante']['EstadosCivil']['descricao']))?($Documento['Representante']['EstadosCivil']['descricao']):('Nenhum'),
 		'representante_docnumero' => $Documento['Representante']['docnumero'],
 		'representante_docorgao' => $Documento['Representante']['docorgao'],
 		'representante_cpfcnpj' => $Documento['Representante']['cpf_cnpj'],

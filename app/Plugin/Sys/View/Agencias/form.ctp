@@ -5,6 +5,9 @@
 <?php $this->start('form-create');?>
 	<?php echo $this->Bootstrap->create('Agencia'); ?>
 <?php $this->end(); ?>
+<?php $this->start('actions');?>
+	<?php echo $this->Bootstrap->actions(null, $formActions); ?>
+<?php $this->end(); ?>
 <?php $this->start('form-body');
 	echo $this->Form->input('nome',array('label'=>'Nome'));
 	echo $this->Form->input('numero',array('label'=>'Número'));

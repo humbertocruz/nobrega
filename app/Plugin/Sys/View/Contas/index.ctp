@@ -1,6 +1,10 @@
 <?php $this->extend('Bootstrap./Common/index'); ?>
+<?php $this->assign('panelStyle','primary'); ?>
+<?php $this->assign('pageHeader','Contas'); ?>
 
-<?php $this->start('pageHeader');?>Contas<?php $this->end(); ?>
+<?php $this->start('actions'); ?>
+	<?php echo $this->Bootstrap->actions(null, $listActions); ?>
+<?php $this->end(); ?>
 
 <<?php $this->start('table-tr'); ?>
 	<tr class="active">
@@ -14,7 +18,7 @@
 <?php $this->start('table-body'); ?>
 	<?php foreach ($data as $Conta) { ?>
 	<tr>
-		<td><?php echo $this->Bootstrap->basicActions($Conta['Conta']['id']); ?></td>
+		<td><?php echo $this->Bootstrap->actions($Conta['Conta']['id'], $indexActions); ?></td>
 		<td><?php echo $Conta['Conta']['numero']; ?></td>
 		<td><?php echo number_format( $Conta['Conta']['saldo'], 2, ',', '.'); ?></td>
 		<td><?php echo $Conta['Conta']['data_saldo']; ?></td>
