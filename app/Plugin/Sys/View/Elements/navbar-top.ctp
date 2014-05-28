@@ -43,7 +43,9 @@
 		<?php if (AuthComponent::user()) { ?>
 		<div class="btn-group navbar-right">
 			<a href="/admin" type="button" class="btn btn-default navbar-btn">Admin</a>
-			<a href="/logout" type="button" class="btn btn-default navbar-btn">Sair</a>
+			<a href="/logout" type="button" class="btn btn-default navbar-btn">Sair
+			<?php if(isset($div_timer) && $div_timer['show'] == true) { ?>&nbsp;&nbsp;<span data-timeout="<?php echo $div_timer['timeout'];?>" data-logout="<?php echo ($div_timer['logout']);?>" id="div-timer" class="label label-success" style="font-size:120%;"><?php echo ($div_timer['timeout']);?>:00</span><?php } ?>
+			</a>
 		</div>
 		<?php } ?>
 	</div>

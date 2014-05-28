@@ -32,6 +32,13 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 
+	public $timer = array(
+		'timeout' => 21, // 20minutos
+		'show' => true,
+		'logout' => '/logout',
+		'timer_id' => 'div-timer'
+	);
+
 	public $helpers = array(
 		'Bootstrap.AuthBs',
 		'Bootstrap.Bootstrap',
@@ -70,6 +77,8 @@ class AppController extends Controller {
 		);
 		$this->set('system', $this->system);
 		
+		//Clock - Cronometro regressivo
+		$this->set('div_timer', $this->timer);		
 	
 	}
 }
